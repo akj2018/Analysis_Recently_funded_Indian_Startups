@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
-
+from datetime import datetime, timezone
 
 with sync_playwright() as p:
     # 1. Select browser engine
@@ -34,26 +34,22 @@ with sync_playwright() as p:
 
     if target_table:
 
+        # Adding date and time of scraped item in iso 8601 format
+        timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
         # Get header
         header_cells = target_table.find("thead").find_all("th")
         headers = [th.get_text(strip=True) for th in header_cells]
         
-        # 3. Get  Rows
+        # Get  Rows
         rows = target_table.find("tbody").find_all("tr")
 
         for row in rows:
             cells = row.find_all("td")
+            item["scraped_at_utc"] = timestamp
             item = {header: cell.get_text(strip=True) for header, cell in zip(headers, cells)}
+
             scraped_data.append(item)
-
-    print(scraped_data)
-
-
-
-
-
-        
-    
 
     # Close the page, then broswer to end the connection
     page.close()

@@ -62,6 +62,11 @@ with sync_playwright() as p:
 if scraped_data:
     print(f'Found {len(scraped_data)} records. Upload to BigQuery')
     upload_to_bigquery(scraped_data)
+
+    # Run transformation immediately after upload
+    from transform_raw_data import run_transformations
+    run_transformations()
+
 else:
     print("No data found to upload via web scraping")
 

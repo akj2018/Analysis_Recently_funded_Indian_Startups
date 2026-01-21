@@ -32,8 +32,10 @@ def upload_to_bigquery(data_list):
                                 destination=latest_table_id, 
                                 job_config=latest_job_config).result()
     
+    print("Success: Data uploaded to Staging Raw Latest Table")
+
     client.load_table_from_json(json_rows=data_list,
                                 destination=history_table_id,
                                 job_config=history_job_config).result()
     
-    print("Success: Data uploaded to both Staging and History!")
+    print("Success: Data uploaded to Fact Raw History Table")

@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone
+from upload_raw_to_bigquery import upload_to_bigquery
 
 with sync_playwright() as p:
     # 1. Select browser engine
@@ -46,12 +47,17 @@ with sync_playwright() as p:
 
         for row in rows:
             cells = row.find_all("td")
-            item["scraped_at_utc"] = timestamp
             item = {header: cell.get_text(strip=True) for header, cell in zip(headers, cells)}
-
+            item["scraped_at_utc"] = timestamp
             scraped_data.append(item)
 
     # Close the page, then broswer to end the connection
     page.close()
     browser.close()
+
+if scraped_data:
+    print(f'Found {len(scraped_data)} records. Upload to BigQuery')
+    upload_to_bigquery(scraped_data)
+else:
+    print("No data found to upload via web scraping")
 

@@ -1,7 +1,10 @@
+import re
+
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone
 from upload_raw_to_bigquery import upload_to_bigquery
+
 
 with sync_playwright() as p:
     # 1. Select browser engine
@@ -40,7 +43,8 @@ with sync_playwright() as p:
 
         # Get header
         header_cells = target_table.find("thead").find_all("th")
-        headers = [th.get_text(strip=True) for th in header_cells]
+        pattern = r'[^a-zA-Z0-9_\s]' # remove invalid characters from column name
+        headers = [re.sub(pattern, "", th.get_text(strip=True)) for th in header_cells]
         
         # Get  Rows
         rows = target_table.find("tbody").find_all("tr")

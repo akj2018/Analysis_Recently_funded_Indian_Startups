@@ -8,10 +8,7 @@ from upload_raw_to_bigquery import upload_to_bigquery
 
 with sync_playwright() as p:
     # 1. Select browser engine
-    browser = p.chromium.launch(headless=False) # default is headless=True, headless=False for debugging
-    context = browser.new_context( 
-        viewport={"width": 1920, "height": 1080} # using context we can define page properties like viewport dimensions
-    )
+    browser = p.chromium.launch(headless=True) # default is headless=True, headless=False for debugging
     page = browser.new_page() 
 
     # 2. go to page and wait for table to appear 

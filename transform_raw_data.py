@@ -36,7 +36,15 @@ def run_transformations():
         ON T.`Company Name` = S.`Company Name` 
         AND T.Country = S.Country
         AND T.`Industry Type` = S.`Industry Type`
-        AND T.`Scraped Date` = S.`Scraped Date`
+        AND T.`Last Funding Date` = S.`Last Funding Date`
+
+    WHEN MATCHED THEN
+            UPDATE SET 
+                T.Website = S.Website,
+                T.`Funding Amount USD` = S.`Funding Amount USD`,
+                T.`Funding Type` = S.`Funding Type`,
+                T.`Scraped Date` = S.`Scraped Date`,
+                T.`Scraped Time UTC` = S.`Scraped Time UTC`
 
     WHEN NOT MATCHED THEN
         INSERT (

@@ -2,7 +2,7 @@ name: ELT Pipeline (Weekly)
 
 on:
   schedule:
-    - cron: "30 18 * * 1" # (approx 12:30 AM IST)
+    - cron: "30 18 * * 0" # (approx 12:00 AM Monday IST)
   workflow_dispatch:
 
 jobs:

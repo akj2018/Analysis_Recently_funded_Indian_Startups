@@ -27,11 +27,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Create json key from Secrets
+      # 4. Install browser binaries
+      - name: Install Chromium browser binaries
+        run: |
+          playwright install chromium --with-deps
+          playwright --version
+
+      # 5. Create json key from Secrets
       - name: Create json key for GCP BigQuery
         run: |
           echo '${{ secrets.GCP_KEY }}' > bigquery-key.json
 
-      # 5. Run main script
+      # 6. Run main script
       - name: Execute Python script
         run: python web_scraping.py

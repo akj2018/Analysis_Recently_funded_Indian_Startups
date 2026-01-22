@@ -1,0 +1,37 @@
+name: ELT Pipeline (Weekly)
+
+on:
+  schedule:
+    - cron: "30 18 * * 1" # (approx 12:30 AM IST)
+  workflow_dispatch:
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Make VM checkout Github repo. To allow workflow access files
+      - name: Checkout Github Repo
+        uses: actions/checkout@v4
+
+      # 2. Install python in VM
+      - name: Install Python v3.12.1
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.1
+          cache: pip
+
+      # 3. Install project dependencies in requirements.txt
+      - name: Install project dependencies from requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Create json key from Secrets
+      - name: Create json key for GCP BigQuery
+        run: |
+          echo '${{ secrets.GCP_KEY }}' > bigquery-key.json
+
+      # 5. Run main script
+      - name: Execute Python script
+        run: python web_scraping.py
